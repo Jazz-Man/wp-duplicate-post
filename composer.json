@@ -4,7 +4,7 @@
     "type": "wordpress-muplugin",
     "require": {
         "php": "^7.4|^8.1",
-        "composer/installers": "^1",
+        "composer/installers": "^2",
         "jazzman/autoload-interface": "^0.3.1",
         "jazzman/parameter-bag": "^1.3"
     },
