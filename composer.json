@@ -11,7 +11,7 @@
     "require-dev": {
         "jazzman/php-cs-fixer-rules": "^0.1.2",
         "php-stubs/wordpress-stubs": "^6.0",
-        "phpmd/phpmd": "^2.13",
+        "phpmd/phpmd": "@stable",
         "phpstan/extension-installer": "^1.1",
         "rector/rector": "^0.14.3",
         "roave/security-advisories": "dev-master",
