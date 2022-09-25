@@ -51,18 +51,17 @@ class Duplicate implements AutoloadInterface {
 
         $parameterBag = app_get_request_data();
 
-        /** @var null|int $postId */
         $postId = $parameterBag->getDigits('post');
 
         /** @var null|string $action */
         $action = $parameterBag->get('action');
 
-        if (!$postId && self::$action !== $action) {
+        if (empty($postId) && self::$action !== $action) {
             wp_die('No post to duplicate has been supplied!');
         }
 
         // get the original post data
-        $post = get_post($postId);
+        $post = get_post((int) $postId);
 
         // if post data exists, create the post duplicate
         if ($post instanceof WP_Post) {
