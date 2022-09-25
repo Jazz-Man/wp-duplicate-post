@@ -4,8 +4,5 @@
     <ArgumentTypeCoercion occurrences="1">
       <code>$newPostArgs</code>
     </ArgumentTypeCoercion>
-    <PossiblyNullArgument occurrences="1">
-      <code>$postId</code>
-    </PossiblyNullArgument>
   </file>
 </files>
