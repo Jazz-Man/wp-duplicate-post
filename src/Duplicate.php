@@ -106,10 +106,12 @@ class Duplicate implements AutoloadInterface {
         /** @var string[] $taxonomies */
         $taxonomies = get_object_taxonomies($wpPost->post_type);
 
-		/** @var array<string,mixed> $meta_data */
+        /** @var array<string,int|string|string[]|int[]> $meta_data */
         $meta_data = get_post_custom($oldPostId);
 
         $tax_input = [];
+
+        /** @var array<string,int|string> $meta_input */
         $meta_input = [];
 
         if (!empty($taxonomies)) {
@@ -151,15 +153,15 @@ class Duplicate implements AutoloadInterface {
 
         $newPostId = wp_insert_post($newPostArgs, true);
 
-        if ($newPostId instanceof \WP_Error) {
+        if (!$newPostId instanceof \WP_Error) {
+            $editPostLink = get_edit_post_link($newPostId, 'edit');
+
+            if (!empty($editPostLink)) {
+                // finally, redirect to the edit post screen for the new draft
+                wp_redirect($editPostLink);
+            }
+        } else {
             wp_die($newPostId->get_error_message());
-        }
-
-        $editPostLink = get_edit_post_link((int) $newPostId, 'edit');
-
-        if (!empty($editPostLink)) {
-            // finally, redirect to the edit post screen for the new draft
-            wp_redirect($editPostLink);
         }
     }
 }
