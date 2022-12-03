@@ -3,8 +3,6 @@
 namespace JazzMan\WpDuplicatePost;
 
 use JazzMan\AutoloadInterface\AutoloadInterface;
-use WP_Error;
-use WP_Post;
 
 class Duplicate implements AutoloadInterface {
     private static string $action = 'duplicate_post_as_draft';
@@ -12,10 +10,10 @@ class Duplicate implements AutoloadInterface {
     private static string $nonce = 'duplicate_nonce';
 
     public function load(): void {
-        add_filter('post_row_actions', [__CLASS__, 'duplicatePostLink'], 10, 2);
-        add_filter('page_row_actions', [__CLASS__, 'duplicatePostLink'], 10, 2);
+        add_filter('post_row_actions', [self::class, 'duplicatePostLink'], 10, 2);
+        add_filter('page_row_actions', [self::class, 'duplicatePostLink'], 10, 2);
 
-        add_action(sprintf('admin_action_%s', self::$action), [__CLASS__, 'duplicatePostAsDraft']);
+        add_action(sprintf('admin_action_%s', self::$action), [self::class, 'duplicatePostAsDraft']);
     }
 
     /**
@@ -23,7 +21,7 @@ class Duplicate implements AutoloadInterface {
      *
      * @return array<string,string>
      */
-    public static function duplicatePostLink(array $actions, WP_Post $wpPost): array {
+    public static function duplicatePostLink(array $actions, \WP_Post $wpPost): array {
         if ('publish' === $wpPost->post_status && current_user_can('edit_posts')) {
             $actions['duplicate'] = sprintf(
                 '<a href="%s" title="%s" rel="permalink">%s</a>',
@@ -64,7 +62,7 @@ class Duplicate implements AutoloadInterface {
         $post = get_post((int) $postId);
 
         // if post data exists, create the post duplicate
-        if ($post instanceof WP_Post) {
+        if ($post instanceof \WP_Post) {
             self::createNewDraftPost($post, (int) $postId);
 
             exit;
@@ -81,7 +79,7 @@ class Duplicate implements AutoloadInterface {
         );
     }
 
-    private static function createNewDraftPost(WP_Post $wpPost, int $oldPostId): void {
+    private static function createNewDraftPost(\WP_Post $wpPost, int $oldPostId): void {
         /**
          * if you don't want current user to be the new post author,
          * then change next couple of lines to this: $new_post_author = $post->post_author;.
@@ -92,66 +90,76 @@ class Duplicate implements AutoloadInterface {
 
         // new post data array
         $postData = $wpPost->to_array();
+
         unset(
+            $postData['ID'],
             $postData['post_date'],
+            $postData['post_name'],
             $postData['post_date_gmt'],
             $postData['post_modified'],
             $postData['post_modified_gmt'],
-            $postData['page_template'],
             $postData['guid'],
-            $postData['ancestors']
+            $postData['ancestors'],
+            $postData['to_ping'],
         );
+
+        /** @var string[] $taxonomies */
+        $taxonomies = get_object_taxonomies($wpPost->post_type);
+
+		/** @var array<string,mixed> $meta_data */
+        $meta_data = get_post_custom($oldPostId);
+
+        $tax_input = [];
+        $meta_input = [];
+
+        if (!empty($taxonomies)) {
+            foreach ($taxonomies as $taxonomy) {
+                /** @var string[] $postTerms */
+                $postTerms = wp_get_object_terms($oldPostId, $taxonomy, ['fields' => 'slugs']);
+
+                if (!empty($postTerms)) {
+                    $tax_input[$taxonomy] = $postTerms;
+                }
+            }
+        }
+
+        if (!empty($meta_data)) {
+            foreach ($meta_data as $meta_key => $meta_value) {
+                if (\in_array($meta_key, ['_edit_lock', '_edit_last'], true)) {
+                    continue;
+                }
+
+                if (\is_array($meta_value)) {
+                    $meta_input[$meta_key] = \count($meta_value) > 1 ? $meta_value : $meta_value[0];
+                } else {
+                    $meta_input[$meta_key] = $meta_value;
+                }
+            }
+        }
 
         /** @var array<string,int|string|string[]> $newPostArgs */
         $newPostArgs = wp_parse_args(
             [
                 'post_author' => $newPostAuthor,
                 'post_status' => 'draft',
+                'post_title' => sprintf('%s Copy', $wpPost->post_title),
+                'tax_input' => $tax_input,
+                'meta_input' => $meta_input,
             ],
             $postData
         );
 
         $newPostId = wp_insert_post($newPostArgs, true);
 
-        if ($newPostId instanceof WP_Error) {
+        if ($newPostId instanceof \WP_Error) {
             wp_die($newPostId->get_error_message());
         }
-
-        self::addTerms($wpPost, (int) $newPostId, $oldPostId);
-        self::addMetaData((int) $newPostId, $oldPostId);
 
         $editPostLink = get_edit_post_link((int) $newPostId, 'edit');
 
         if (!empty($editPostLink)) {
             // finally, redirect to the edit post screen for the new draft
             wp_redirect($editPostLink);
-        }
-    }
-
-    private static function addTerms(WP_Post $wpPost, int $newPostId, int $oldPostId): void {
-        /** @var string[] $taxonomies */
-        $taxonomies = get_object_taxonomies($wpPost->post_type);
-
-        foreach ($taxonomies as $taxonomy) {
-            /** @var string[] $postTerms */
-            $postTerms = wp_get_object_terms($oldPostId, $taxonomy, ['fields' => 'slugs']);
-
-            if (!empty($postTerms)) {
-                wp_set_object_terms($newPostId, $postTerms, $taxonomy, false);
-            }
-        }
-    }
-
-    private static function addMetaData(int $newPostId, int $oldPostId): void {
-        /** @var null|array<string,string> $data */
-        $data = get_post_custom($oldPostId);
-
-        if (empty($data)) {
-            return;
-        }
-
-        foreach ($data as $metaKey => $metaValues) {
-            add_post_meta($newPostId, $metaKey, $metaValues);
         }
     }
 }
