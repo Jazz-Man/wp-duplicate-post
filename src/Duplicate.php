@@ -106,7 +106,7 @@ class Duplicate implements AutoloadInterface {
         /** @var string[] $taxonomies */
         $taxonomies = get_object_taxonomies($wpPost->post_type);
 
-        /** @var array<string,int|string|string[]|int[]> $meta_data */
+        /** @var array<string,int|int[]|string|string[]> $meta_data */
         $meta_data = get_post_custom($oldPostId);
 
         $tax_input = [];
@@ -114,28 +114,24 @@ class Duplicate implements AutoloadInterface {
         /** @var array<string,int|string> $meta_input */
         $meta_input = [];
 
-        if (!empty($taxonomies)) {
-            foreach ($taxonomies as $taxonomy) {
-                /** @var string[] $postTerms */
-                $postTerms = wp_get_object_terms($oldPostId, $taxonomy, ['fields' => 'slugs']);
+        foreach ($taxonomies as $taxonomy) {
+            /** @var string[] $postTerms */
+            $postTerms = wp_get_object_terms($oldPostId, $taxonomy, ['fields' => 'slugs']);
 
-                if (!empty($postTerms)) {
-                    $tax_input[$taxonomy] = $postTerms;
-                }
+            if (!empty($postTerms)) {
+                $tax_input[$taxonomy] = $postTerms;
             }
         }
 
-        if (!empty($meta_data)) {
-            foreach ($meta_data as $meta_key => $meta_value) {
-                if (\in_array($meta_key, ['_edit_lock', '_edit_last'], true)) {
-                    continue;
-                }
+        foreach ($meta_data as $meta_key => $meta_value) {
+            if (\in_array($meta_key, ['_edit_lock', '_edit_last'], true)) {
+                continue;
+            }
 
-                if (\is_array($meta_value)) {
-                    $meta_input[$meta_key] = \count($meta_value) > 1 ? $meta_value : $meta_value[0];
-                } else {
-                    $meta_input[$meta_key] = $meta_value;
-                }
+            if (\is_array($meta_value)) {
+                $meta_input[$meta_key] = \count($meta_value) > 1 ? $meta_value : $meta_value[0];
+            } else {
+                $meta_input[$meta_key] = $meta_value;
             }
         }
 

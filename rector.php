@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Rector\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector;
 use Rector\Config\RectorConfig;
 use Rector\Core\ValueObject\PhpVersion;
 use Rector\Set\ValueObject\LevelSetList;
@@ -23,18 +24,22 @@ return static function (RectorConfig $config): void {
     $config->fileExtensions(['php']);
     $config->phpVersion(PhpVersion::PHP_74);
     $config->importNames();
-    $config->importShortClasses();
+    $config->importShortClasses(false);
     $config->parallel();
     $config->cacheDirectory(__DIR__.'/cache/rector');
     $config->paths([
-        __DIR__.'/src',
+        __DIR__,
     ]);
 
     $config->skip(
         [
             // or fnmatch
             __DIR__.'/vendor',
+            __DIR__.'/.github',
             __DIR__.'/cache',
+            __DIR__.'/rector.php',
+            __DIR__.'/.php-cs-fixer.php',
+            CallableThisArrayToAnonymousFunctionRector::class,
         ]
     );
 };
