@@ -39,7 +39,7 @@ return static function (RectorConfig $config): void {
             __DIR__.'/cache',
             __DIR__.'/rector.php',
             __DIR__.'/.php-cs-fixer.php',
-            CallableThisArrayToAnonymousFunctionRector::class,
+//            CallableThisArrayToAnonymousFunctionRector::class,
         ]
     );
 };

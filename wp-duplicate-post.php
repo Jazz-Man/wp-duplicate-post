@@ -20,6 +20,7 @@ if (!function_exists('app_autoload_classes')) {
 if (!class_exists(Duplicate::class)) {
     return;
 }
+
 app_autoload_classes([
     Duplicate::class,
 ]);
