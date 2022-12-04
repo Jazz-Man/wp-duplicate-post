@@ -64,7 +64,7 @@ class Duplicate implements AutoloadInterface {
         $post = get_post((int) $postId);
 
         // if post data exists, create the post duplicate
-        if ($post instanceof \WP_Post ) {
+        if ($post instanceof \WP_Post) {
             self::createNewDraftPost($post, (int) $postId);
 
             exit;
