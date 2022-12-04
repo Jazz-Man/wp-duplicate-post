@@ -33,8 +33,10 @@ class Duplicate implements AutoloadInterface {
                         ],
                         'admin.php'
                     ),
-                    basename(__FILE__),
-                    self::$nonce
+
+
+                                basename(__FILE__),
+                    self::$nonce,
                 ),
                 esc_attr__('Duplicate this item'),
                 esc_attr__('Duplicate')
