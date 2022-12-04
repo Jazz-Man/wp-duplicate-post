@@ -10,6 +10,9 @@ on:
       - 'src/**'
       - 'wp-duplicate-post.php'
 jobs:
+  reviewdog:
+    uses: ./.github/workflows/reviewdog.yml
+
   suggester:
     name: runner / suggester / php-suggester
     runs-on: ubuntu-latest
