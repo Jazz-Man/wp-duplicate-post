@@ -2,9 +2,15 @@ name: ReviewDog
 on:
   push:
     branches:
-      - master
+#      - master
       - develop
+    paths:
+      - 'src/**'
+      - 'wp-duplicate-post.php'
   pull_request:
+    paths:
+      - 'src/**'
+      - 'wp-duplicate-post.php'
   workflow_call:
 
 jobs:
