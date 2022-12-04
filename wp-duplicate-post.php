@@ -13,14 +13,8 @@ use JazzMan\WpDuplicatePost\Duplicate;
  * License:             MIT
  * Update URI:          https://github.com/Jazz-Man/wp-duplicate-post.
  */
-if (!function_exists('app_autoload_classes')) {
-    return;
+if (function_exists('app_autoload_classes') && class_exists(Duplicate::class)) {
+    app_autoload_classes([
+        Duplicate::class,
+    ]);
 }
-
-if (!class_exists(Duplicate::class)) {
-    return;
-}
-
-app_autoload_classes([
-    Duplicate::class,
-]);
