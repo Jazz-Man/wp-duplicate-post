@@ -1,4 +1,4 @@
-name: reviewdog-suggester
+name: Suggester
 on:
 #  push:
 #    branches:
@@ -38,14 +38,14 @@ jobs:
 
       - run: composer install --prefer-dist --no-interaction --no-progress -o
 
-      - run: php-cs-fixer fix --config=.php-cs-fixer.php --using-cache=no --no-interaction
-      - name: suggester / php-cs-fixer
-        uses: reviewdog/action-suggester@v1
-        with:
-          tool_name: php-cs-fixer
-
       - run: rector process
       - name: suggester / rector
         uses: reviewdog/action-suggester@v1
         with:
           tool_name: rector
+
+      - run: php-cs-fixer fix --config=.php-cs-fixer.php --using-cache=no --no-interaction
+      - name: suggester / php-cs-fixer
+        uses: reviewdog/action-suggester@v1
+        with:
+          tool_name: php-cs-fixer
