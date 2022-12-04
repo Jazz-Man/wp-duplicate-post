@@ -1,46 +1,46 @@
-#name: Suggester
-#on:
-#  push:
-#    branches:
-##      - master
-#      - develop
-#    paths:
-#      - 'src/**'
-#      - 'wp-duplicate-post.php'
+name: Suggester
+on:
+  push:
+    branches:
+#      - master
+      - develop
+    paths:
+      - 'src/**'
+      - 'wp-duplicate-post.php'
 #  workflow_call:
-#  pull_request:
-#    paths:
-#      - 'src/**'
-#      - 'wp-duplicate-post.php'
-#jobs:
-#  reviewdog:
-#    uses: ./.github/workflows/reviewdog.yml
-#
-#  suggester:
-#    name: runner / suggester / php-suggester
-#    runs-on: ubuntu-latest
-#    needs:
-#      - reviewdog
-#    steps:
-#      - uses: actions/checkout@v3
-#      - uses: shivammathur/setup-php@v2
-#        with:
-#          php-version: 7.4
-#          extensions: igbinary
-#          coverage: none
-#          tools: php-cs-fixer, rector/rector
-#
-#      - id: composer-cache
-#        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-#
-#      - uses: actions/cache@v3
-#        with:
-#          path: ${{ steps.composer-cache.outputs.dir }}
-#          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
-#          restore-keys: ${{ runner.os }}-composer-
-#
-#      - run: composer install --prefer-dist --no-interaction --no-progress -o
-#
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'wp-duplicate-post.php'
+jobs:
+  reviewdog:
+    uses: ./.github/workflows/reviewdog.yml
+
+  suggester:
+    name: runner / suggester / php-suggester
+    runs-on: ubuntu-latest
+    needs:
+      - reviewdog
+    steps:
+      - uses: actions/checkout@v3
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          extensions: igbinary
+          coverage: none
+          tools: php-cs-fixer, rector/rector
+
+      - id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - run: composer install --prefer-dist --no-interaction --no-progress -o
+
 #      - run: rector process
 #
 #      - name: suggester / rector
@@ -48,12 +48,12 @@
 #        with:
 #          tool_name: rector
 #          filter_mode: nofilter
-##          cleanup: false
-#
-##      - name: Run php-cs-fixer
-##        run: php-cs-fixer fix --config=.php-cs-fixer.php --using-cache=no --no-interaction
-##      - name: suggester / php-cs-fixer
-##        uses: reviewdog/action-suggester@v1
-##        with:
-##          tool_name: php-cs-fixer
-##          cleanup: true
+#          cleanup: false
+
+      - name: Run php-cs-fixer
+        run: php-cs-fixer fix --config=.php-cs-fixer.php --using-cache=no --no-interaction
+      - name: suggester / php-cs-fixer
+        uses: reviewdog/action-suggester@v1
+        with:
+          tool_name: php-cs-fixer
+          cleanup: true
