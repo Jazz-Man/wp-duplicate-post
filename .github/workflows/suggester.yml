@@ -47,7 +47,7 @@ jobs:
         uses: reviewdog/action-suggester@v1
         with:
           tool_name: rector
-          filter_mode: added
+          filter_mode: nofilter
 #          cleanup: false
 
 #      - name: Run php-cs-fixer
