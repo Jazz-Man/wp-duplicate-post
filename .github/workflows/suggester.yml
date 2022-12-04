@@ -1,9 +1,9 @@
 name: Suggester
 on:
-#  push:
-#    branches:
-##      - master
-#      - develop
+  push:
+    branches:
+#      - master
+      - develop
   workflow_call:
   pull_request:
     paths:
@@ -38,17 +38,18 @@ jobs:
 
       - run: composer install --prefer-dist --no-interaction --no-progress -o
 
-      - run: rector process
-      - name: suggester / rector
+      - name: Run rector
+        id: rector-fix
+        run: rector process
         uses: reviewdog/action-suggester@v1
         with:
           tool_name: rector
-          cleanup: false
+  #          cleanup: false
 
-      - name: Run php-cs-fixer
-        run: php-cs-fixer fix --config=.php-cs-fixer.php --using-cache=no --no-interaction
-      - name: suggester / php-cs-fixer
-        uses: reviewdog/action-suggester@v1
-        with:
-          tool_name: php-cs-fixer
-          cleanup: true
+#      - name: Run php-cs-fixer
+#        run: php-cs-fixer fix --config=.php-cs-fixer.php --using-cache=no --no-interaction
+#      - name: suggester / php-cs-fixer
+#        uses: reviewdog/action-suggester@v1
+#        with:
+#          tool_name: php-cs-fixer
+#          cleanup: true
