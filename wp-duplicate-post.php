@@ -19,3 +19,4 @@ if ( function_exists('app_autoload_classes') && class_exists(Duplicate::class)) 
         Duplicate::class,
     ]);
 }
+
