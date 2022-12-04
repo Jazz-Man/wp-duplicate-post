@@ -26,7 +26,7 @@ return static function (RectorConfig $config): void {
     $config->importNames();
     $config->importShortClasses(false);
     $config->parallel();
-    $config->cacheDirectory(__DIR__.'/cache/rector');
+//    $config->cacheDirectory(__DIR__.'/cache/rector');
     $config->paths([
         __DIR__,
     ]);
