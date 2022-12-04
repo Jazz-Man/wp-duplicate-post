@@ -31,8 +31,7 @@ jobs:
 
       - run: composer install --prefer-dist --no-interaction --no-progress -o
 
-      - name: Setup reviewdog
-        uses: reviewdog/action-setup@v1
+      - uses: reviewdog/action-setup@v1
         with:
           reviewdog_version: latest
 
