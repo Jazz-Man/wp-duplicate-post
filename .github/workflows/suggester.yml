@@ -28,7 +28,7 @@ jobs:
           php-version: 7.4
           extensions: igbinary
           coverage: none
-          tools: php-cs-fixer, rector/rector
+          tools: php-cs-fixer
 
       - id: composer-cache
         run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
@@ -41,7 +41,7 @@ jobs:
 
       - run: composer install --prefer-dist --no-interaction --no-progress -o
 
-      - run: rector process
+      - run: ./vendor/bin/rector process -vvv
 
       - name: suggester / rector
         uses: reviewdog/action-suggester@v1
