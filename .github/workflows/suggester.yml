@@ -1,9 +1,12 @@
 name: Suggester
 on:
-#  push:
-#    branches:
-##      - master
-#      - develop
+  push:
+    branches:
+#      - master
+      - develop
+    paths:
+      - 'src/**'
+      - 'wp-duplicate-post.php'
   workflow_call:
   pull_request:
     paths:
