@@ -43,9 +43,12 @@ jobs:
         uses: reviewdog/action-suggester@v1
         with:
           tool_name: rector
+          cleanup: false
 
-      - run: php-cs-fixer fix --config=.php-cs-fixer.php --using-cache=no --no-interaction
+      - name: Run php-cs-fixer
+        run: php-cs-fixer fix --config=.php-cs-fixer.php --using-cache=no --no-interaction
       - name: suggester / php-cs-fixer
         uses: reviewdog/action-suggester@v1
         with:
           tool_name: php-cs-fixer
+          cleanup: true
