@@ -31,14 +31,12 @@ jobs:
 
       - run: composer install --prefer-dist --no-interaction --no-progress -o
 
-#      - uses: reviewdog/action-setup@v1
-#        with:
-#          reviewdog_version: latest
-
-      - name: Reviewdog GitHub Check
+      - name: Setup reviewdog
         uses: reviewdog/action-setup@v1
         with:
           reviewdog_version: latest
+
+      - name: Reviewdog GitHub Check
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ github.token }}
         run: reviewdog -reporter=github-check -filter-mode=diff_context -fail-on-error
