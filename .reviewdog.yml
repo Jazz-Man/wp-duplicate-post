@@ -16,3 +16,9 @@ runner:
     format: checkstyle
     name: psalm
     level: warning
+
+  php-cs-fixer:
+    cmd: php-cs-fixer fix --config=.php-cs-fixer.php --format=checkstyle
+    format: checkstyle
+    name: php-cs-fixer
+    level: warning
