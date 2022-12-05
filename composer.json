@@ -16,9 +16,6 @@
         "roots/wordpress": "^6.1",
         "szepeviktor/phpstan-wordpress": "^1.1"
     },
-    "replace": {
-        "phpstan/phpstan": "*"
-    },
     "license": "MIT",
     "autoload": {
         "psr-4": {
